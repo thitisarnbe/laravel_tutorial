@@ -23,12 +23,30 @@ class UserRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'name' => 'required',
-            'email' => 'required',
-            'role_id' => 'required',
-            'status' => 'required',
-            'password' => 'required',
-        ];
+        $method = $this->method();
+        $rule = [];
+
+        switch($method){
+            case "POST":
+                $rule = [
+                    'name' => 'required',
+                    'email' => 'required',
+                    'role_id' => 'required',
+                    'status' => 'required',
+                    'password' => 'required',
+                ];
+                break;
+            case 'PUT':
+            case 'PATCH':
+                $rule = [
+                    'name' => 'required',
+                    'email' => 'required',
+                    'role_id' => 'required',
+                    'status' => 'required',
+                ];
+            break;
+        }
+
+        return $rule;
     }
 }

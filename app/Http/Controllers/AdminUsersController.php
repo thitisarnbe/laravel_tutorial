@@ -85,7 +85,15 @@ class AdminUsersController extends Controller
     public function edit($id)
     {
         //
-        return view('admin.users.edit');
+        $user = User::findOrFail($id);
+
+        $data = [
+            'user' => $user,
+            'role_options'=>$this->getRoleOptions(),
+            'status_options'=>$this->getStatusOptions()
+        ];
+        
+        return view('admin.users.edit',$data);
     }
 
     /**
@@ -95,9 +103,30 @@ class AdminUsersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UserRequest $request, $id)
     {
-        //
+        if(empty(trim($request->password))){
+           $input = $request->except('password');
+        }else{
+           $input = $request->all();
+           $input['password'] = bcrypt($request->password);
+        }
+
+        // 
+        $user = User::findORFail($id);
+     
+
+        if($file = $request->file('photo_id')){
+            $name = time().'_'.$file->getClientOriginalName();
+
+            $file->move('images',$name);
+            $photo = Photo::create(['file'=>$name]);
+            $input['photo_id'] = $photo->id;
+        }
+        $user->update($input);
+
+
+        return redirect('admin/users');
     }
 
     /**
