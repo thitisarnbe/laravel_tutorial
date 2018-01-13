@@ -5,6 +5,10 @@
     <div class="row">
         <div class="col-sm-3">
             <img class="img-responsive img-rounded" src="{{$user->photo ? $user->photo->file : 'http://placehold.it/400x400'}}" alt="" >
+            {!! Form::open(['method'=>'DELETE','action'=>['AdminUsersController@destroy',$user->id],'files'=>true,'class'=>'clearfix text-center']) !!}
+                {{ csrf_field() }}
+                {!! Form::submit('Delete User', ['class'=>'btn btn-xs btn-danger']) !!}
+            {!! Form::close() !!}
         </div>
         <div class="col-sm-9">
             {!! Form::open(['method'=>'PATCH','action'=>['AdminUsersController@update',$user->id],'files'=>true]) !!}
@@ -39,6 +43,7 @@
                 </div>
             {!! Form::close() !!}
         </div>
+   
     </div>
     @include('includes.form_error')
 @stop
